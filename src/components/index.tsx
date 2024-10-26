@@ -28,13 +28,13 @@ export const SubTitle = styled.h2`
   font-size: 12px;
   font-weight: 400;
   color: #F8F5EC;
-  margin: 0 0 32px;
+  margin: 0 0 12px;
 `
 
 export const ScanArea = styled.div`
   width: 335px;
   height: 335px;
-  margin: 32px auto;
+  margin: 12px auto;
   position: relative;
 
   .corner {
@@ -73,9 +73,9 @@ export const ScanArea = styled.div`
     border-bottom-color: #fff;
   }
 `
-export const Text = styled.div`
-  color: #fff;
+export const Text = styled.div<{ status?: 'success' | 'error' | 'hint' }>`
+  color: ${props => props.status === 'success' ? '#53BC6B' : (props.status === 'error' ? '#F15B6D' : (props.status === 'hint' ? 'rgba(255, 255, 255, .3)' : '#fff'))};
   font-size: 12px;
   text-align: center;
-  margin: 0 32px;
+  margin: 0 12px;
 `
