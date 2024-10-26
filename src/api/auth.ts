@@ -7,6 +7,11 @@ export async function getTokens(auth_hash: string) {
   return response.data?.data
 }
 
+export async function getUser(id?: number) {
+  const response = await axios.post(`/user/${id || 'authorized'}`)
+  return response.data
+}
+
 export default async function login(params: FormData) {
   const { data }: any = await axios.post('/auth', params, { headers: { Guest: true  } })
   if (data?.status === 'error') {

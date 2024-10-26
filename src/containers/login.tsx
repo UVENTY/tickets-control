@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import login from '../api/login';
-import { Button, Container, Input } from '../components';
 import styled from 'styled-components';
+import { Button, Container, Input } from '../components';
+import login from '../api/auth';
 
 const ErrorText = styled.div`
   padding: 10;
