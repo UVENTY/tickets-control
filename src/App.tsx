@@ -69,7 +69,12 @@ function App() {
     setLoading(true)
     const response = await updateTicket(ticket.t_id, ticket.id, !ticket.passed)
     if (response.data?.code === '200') {
-      setTicket((prev: any) => ({ ...prev, status: ticket.passed ? 'success' : undefined, message: !ticket.passed ? 'Used' : 'Purchased', passed: !ticket.passed }))
+      setTicket((prev: any) => ({
+        ...prev,
+        status: ticket.passed ? 'success' : undefined,
+        message: !ticket.passed ? 'Scanned' : 'Valid',
+        passed: !ticket.passed
+      }))
     }
     setLoading(false)
   }, [])
