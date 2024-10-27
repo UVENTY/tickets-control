@@ -73,7 +73,7 @@ export default function Search(props: {
           <Text status={ticket.status} inline>{ticket.message}</Text>
         </div>
       </Container>}
-      {(!isScan && currentSearch !== searchValue) &&
+      {(!isScan && (ticket?.status === 'error' || currentSearch !== searchValue)) &&
         <Button
           onClick={() => props.search?.(searchValue)}
           disabled={isLoading}
@@ -81,7 +81,7 @@ export default function Search(props: {
           {isLoading ? <Spinner size={16} /> : 'Search'}
         </Button>
       }
-      {ticket && ticket.status !== 'error' && <Button
+        {ticket && ticket.status !== 'error' && <Button
           disabled={!ticket || isLoading}
           onClick={() => props.togglePassed?.(ticket)}
         >

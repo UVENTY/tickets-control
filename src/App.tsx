@@ -38,21 +38,28 @@ function App() {
 
   const handleSearch = (value: string) => {
     if (!user?.sc_id) return
-    const [hallId, category, row, seat, id, time] = value.split(';')
-    if (!id) return
-    const seatId = [hallId, category, row, seat].join(';')
+    const parts = value.split(';')
+    let id
+    let seatId: any
+    const ticket: any = { id:seatId }
+    if (parts.length === 1) {
+      id = value
+    } else {
+      const [hallId, category, row, seat, partId, time] = parts
+      id = partId
+      ticket.id = [hallId, category, row, seat].join(';')
+      ticket.row = row
+      ticket.seat = seat
+    }
     setLoading(true)
     setCurrentSearch(value)
-    /* if (event.notPurchased?.includes(seatId)) {
-      setTicket({ id: seatId, status: 'error', message: 'Not purchased' })
-    } */
     checkTicket(id).then(({ data, code }) => {
       const isPaid = data.status === '2' || (data.b_state && Number(data.b_state) !== 3 && !!data.b_payment_datetime)
       if (code === '200' && isPaid) {
         const passed = data?.pass === '1'
-        setTicket({ id: seatId, status: passed ? undefined : 'success', message: passed ? 'Used' : 'Purchased', t_id: data?.t_id, row, seat, passed })
+        setTicket({ ...ticket, status: passed ? undefined : 'success', message: passed ? 'Used' : 'Purchased', t_id: data?.t_id, passed })
       } else {
-        setTicket({ id: seatId, status: 'error', message: 'Not found' })
+        setTicket({ status: 'error', message: 'Not found' })
       }
       setLoading(false)
     })
