@@ -85,7 +85,7 @@ export default function Search(props: {
           disabled={!ticket || isLoading}
           onClick={() => props.togglePassed?.(ticket)}
         >
-        {ticket?.passed ? 'https://uticket.uventy.com/uventy/c/TikShow/api/v1 status' : 'Mark as scanned'}
+        {ticket?.passed ? 'Revoke status' : 'Mark as scanned'}
         </Button>
       }
     </Container>
