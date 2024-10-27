@@ -46,10 +46,11 @@ function App() {
     /* if (event.notPurchased?.includes(seatId)) {
       setTicket({ id: seatId, status: 'error', message: 'Not purchased' })
     } */
-    checkTicket(id).then(response => {
-      if (response.code === '200') {
-        const passed = response.data?.pass === '1'
-        setTicket({ id: seatId, status: passed ? undefined : 'success', message: passed ? 'Used' : 'Purchased', t_id: response.data?.t_id, row, seat, passed })
+    checkTicket(id).then(({ data, code }) => {
+      const isPaid = data.status === '2' || (data.b_state && Number(data.b_state) !== 3 && !!data.b_payment_datetime)
+      if (code === '200' && isPaid) {
+        const passed = data?.pass === '1'
+        setTicket({ id: seatId, status: passed ? undefined : 'success', message: passed ? 'Used' : 'Purchased', t_id: data?.t_id, row, seat, passed })
       } else {
         setTicket({ id: seatId, status: 'error', message: 'Not found' })
       }
@@ -79,7 +80,10 @@ function App() {
           isLoading={loading}
           searchType={searchType}
           currentSearch={currentSearch}
-          setSearhType={setSearchType}
+          setSearhType={type => {
+            setTicket(null)
+            setSearchType(type)
+          }}
           togglePassed={handleTogglePassed}
           search={handleSearch}
         />

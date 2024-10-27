@@ -73,14 +73,15 @@ export default function Search(props: {
           <Text status={ticket.status} inline>{ticket.message}</Text>
         </div>
       </Container>}
-      {(!isScan && currentSearch !== searchValue) ?
+      {(!isScan && currentSearch !== searchValue) &&
         <Button
           onClick={() => props.search?.(searchValue)}
           disabled={isLoading}
         >
           {isLoading ? <Spinner size={16} /> : 'Search'}
-        </Button> :
-        <Button
+        </Button>
+      }
+      {ticket && ticket.status !== 'error' && <Button
           disabled={!ticket || isLoading}
           onClick={() => props.togglePassed?.(ticket)}
         >
