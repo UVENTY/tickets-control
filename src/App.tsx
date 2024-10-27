@@ -57,7 +57,7 @@ function App() {
       const isPaid = data.status === '2' || (data.b_state && Number(data.b_state) !== 3 && !!data.b_payment_datetime)
       if (code === '200' && isPaid) {
         const passed = data?.pass === '1'
-        setTicket({ ...ticket, status: passed ? undefined : 'success', message: passed ? 'Used' : 'Purchased', t_id: data?.t_id, passed })
+        setTicket({ ...ticket, status: passed ? undefined : 'success', message: passed ? 'Scanned' : 'Valid', t_id: data?.t_id, passed })
       } else {
         setTicket({ status: 'error', message: 'Not found' })
       }

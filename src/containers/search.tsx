@@ -85,7 +85,7 @@ export default function Search(props: {
           disabled={!ticket || isLoading}
           onClick={() => props.togglePassed?.(ticket)}
         >
-          {ticket?.passed ? 'Revoke' : 'Mark as used'}
+          {ticket?.passed ? 'Revoke status' : 'Mark as scanned'}
         </Button>
       }
     </Container>
