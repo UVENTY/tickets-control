@@ -1,15 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Container, Input } from '../components';
+import { Button, Container, Input, Text } from '../components';
 import login from '../api/auth';
-
-const ErrorText = styled.div`
-  padding: 10;
-  margin-bottom: 10px;
-  color: #F15B6D;
-  margin-bottom: -20px;
-  text-align: center;
-`
+import Spinner from '../components/spinner';
 
 export default function Login(props: {
   onSuccess?: (result: { user: any, token: string, u_hash: string }) => any
@@ -27,22 +20,24 @@ export default function Login(props: {
         const data = new FormData(e.currentTarget)
         try {
           const result = await login(data)
-          if (result.token && result.u_hash) {
-            props.onSuccess && props.onSuccess(result)
+          if (result.token && result.u_hash && props.onSuccess) {
+            await props.onSuccess(result)
           }
+          setPending(false)
         } catch (e) {
           setError((e as any).message)
-        } finally {
           setPending(false)
         }
       }}
     >
-      <Container>
+      <Container align='center'>
         <input type='hidden' name='type' value='e-mail' />
-        <Input name='login' placeholder='Login' onChange={() => setError('')} />
+        <Input name='login' placeholder='Login' onChange={() => setError('')} autoFocus />
         <Input name='password' placeholder='Password' type='password' onChange={() => setError('')} />
-        {!!error && <ErrorText>{error}</ErrorText>}
-        <Button type='submit' style={{ marginTop: 20 }} disabled={pending}>Sign In</Button>
+        {!!error && <Text status='error'>{error}</Text>}
+        <Button type='submit' style={{ marginTop: 20 }} disabled={pending}>
+          {pending ? <Spinner size={16} /> : 'Sign In'}
+        </Button>
       </Container>
     </form>
   )

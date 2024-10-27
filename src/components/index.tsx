@@ -3,13 +3,13 @@ import styled from 'styled-components';
 export { default as Button } from './button'
 export { default as Input } from './input'
 
-export const Container = styled.div`
+export const Container = styled.div<{ align?: 'start' | 'center' | 'end' }>`
   height: 100%;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  justify-content: ${props => props.align !== 'center' ? `flex-${props.align}` : props.align};
   gap: 20px;
-  justify-content: center;
   max-width: 500px;
   margin: 0 auto;
   padding: 0 20px;
@@ -24,58 +24,25 @@ export const Title = styled.h1`
   margin: 0 0 12px;
 `
 
-export const SubTitle = styled.h2`
-  font-size: 12px;
-  font-weight: 400;
-  color: #F8F5EC;
-  margin: 0 0 12px;
-`
-
 export const ScanArea = styled.div`
-  width: 335px;
-  height: 335px;
+  width: 100%;
   margin: 12px auto;
   position: relative;
 
-  .corner {
-    position: absolute;
-    width: 38px;
-    height: 38px;
-    z-index: 1;
-    border: 1px solid transparent;
-  }
+  svg {
+    path {
+      stroke: #fff;
+    }
 
-  .lt {
-    left: -1px;
-    top: -1px;
-    border-left-color: #fff;
-    border-top-color: #fff;
-  }
-
-  .rt {
-    right: -1px;
-    top: -1px;
-    border-right-color: #fff;
-    border-top-color: #fff;
-  }
-
-  .lb {
-    left: -1px;
-    bottom: -1px;
-    border-left-color: #fff;
-    border-bottom-color: #fff;
-  }
-
-  .rb {
-    right: -1px;
-    bottom: -1px;
-    border-right-color: #fff;
-    border-bottom-color: #fff;
+    &:last-child {
+      display: none;
+    }
   }
 `
-export const Text = styled.div<{ status?: 'success' | 'error' | 'hint' }>`
+export const Text = styled.div<{ size?: string | number, status?: 'success' | 'error' | 'hint', inline?: boolean, align?: string }>`
   color: ${props => props.status === 'success' ? '#53BC6B' : (props.status === 'error' ? '#F15B6D' : (props.status === 'hint' ? 'rgba(255, 255, 255, .3)' : '#fff'))};
-  font-size: 12px;
-  text-align: center;
-  margin: 0 12px;
+  display: ${props => props.inline ? 'inline-block' : 'block'};
+  font-size: ${props => props.size || '14px'};
+  text-align: ${props => props.align || 'left'};
+  margin: 0 3px;
 `

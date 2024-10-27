@@ -13,7 +13,7 @@ export async function getUser(id?: number) {
 }
 
 export default async function login(params: FormData) {
-  const { data }: any = await axios.post('/auth', params, { headers: { Guest: true  } })
+  const { data }: any = await axios.post('/auth', params, { headers: { guest: true  } })
   if (data?.status === 'error') {
     throw new Error(data.message)
   }

@@ -8,7 +8,7 @@ export const axios = axiosHttp.create({
 
 axios.interceptors.request.use(config => {
   const { headers, data } = config
-  if (!headers?.Guest) {
+  if (!headers?.guest) {
     const formData = (data instanceof URLSearchParams || data instanceof FormData) ? data : getFormData(data)
     const token = localStorage.getItem('token')
     const u_hash = localStorage.getItem('u_hash')
@@ -18,7 +18,7 @@ axios.interceptors.request.use(config => {
     }
     config.data = formData
   } else {
-    config.headers = omit(config.headers, ['Guest']) as AxiosRequestHeaders
+    config.headers = omit(config.headers, ['guest']) as AxiosRequestHeaders
   }
   return config
 })
