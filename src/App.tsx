@@ -102,6 +102,7 @@ function App() {
           }}
           togglePassed={handleTogglePassed}
           search={handleSearch}
+          setTicket={setTicket}
         />
       }
     </>

@@ -27,8 +27,9 @@ export default function Search(props: {
   currentSearch?: string
   searchType?: 'scan' | 'input',
   setSearhType?: (type: 'scan' | 'input') => any,
-  togglePassed?: (ticket: any, onSuccess?: () => void) => any
-  search?: (value: string) => any
+  togglePassed?: (ticket: any, onSuccess?: () => void) => any,
+  search?: (value: string) => any,
+  setTicket?: (ticket: any) => void
 }) {
   const [ searchValue, setSearchValue ] = useState<string>('')
   const { searchType = 'scan', isLoading, ticket, currentSearch, setSearhType } = props
@@ -55,7 +56,10 @@ export default function Search(props: {
         open={modal.open}
         status={modal.status}
         message={modal.message}
-        onClose={() => setModal(m => ({...m, open: false}))}
+        onClose={() => {
+          setModal(m => ({...m, open: false}));
+          props.setTicket?.(null);
+        }}
       />
       <Title>Event #{props.eventId}</Title>
       <Text size='12px' status='hint'>{props.username}</Text>
