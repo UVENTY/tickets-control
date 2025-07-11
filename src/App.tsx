@@ -67,7 +67,7 @@ function App() {
     })
   }
 
-  const handleTogglePassed = useCallback(async (ticket: any) => {
+  const handleTogglePassed = useCallback(async (ticket: any, onSuccess?: () => void) => {
     setLoading(true)
     const response = await updateTicket(ticket.t_id, ticket.id, !ticket.passed)
     if (response.data?.code === '200') {
@@ -77,6 +77,8 @@ function App() {
         message: !ticket.passed ? 'Scanned' : 'Valid',
         passed: !ticket.passed
       }))
+      // Показываем модальное окно успеха при изменении статуса
+      onSuccess?.()
     }
     setLoading(false)
   }, [])

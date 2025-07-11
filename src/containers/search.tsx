@@ -27,7 +27,7 @@ export default function Search(props: {
   currentSearch?: string
   searchType?: 'scan' | 'input',
   setSearhType?: (type: 'scan' | 'input') => any,
-  togglePassed?: (ticket: any) => any
+  togglePassed?: (ticket: any, onSuccess?: () => void) => any
   search?: (value: string) => any
 }) {
   const [ searchValue, setSearchValue ] = useState<string>('')
@@ -35,15 +35,17 @@ export default function Search(props: {
 
   const [modal, setModal] = useState<{open: boolean, status: 'success'|'error', message: string}>({open: false, status: 'success', message: ''});
 
+  // Показываем модальное окно только при изменении статуса билета
   useEffect(() => {
-    if (ticket) {
-      if (ticket.status === 'error') {
-        setModal({open: true, status: 'error', message: 'Error'});
-      } else {
-        setModal({open: true, status: 'success', message: 'Successfully'});
-      }
+    if (ticket && ticket.status === 'error') {
+      setModal({open: true, status: 'error', message: 'Error'});
     }
-  }, [ticket]);
+  }, [ticket?.status === 'error']);
+
+  // Функция для показа модального окна успеха при изменении статуса
+  const showSuccessModal = () => {
+    setModal({open: true, status: 'success', message: 'Successfully'});
+  };
 
   const isScan = searchType === 'scan'
 
@@ -73,7 +75,6 @@ export default function Search(props: {
               }
             }}
             components={{
-              audio: true,
               onOff: true,
               torch: true,
               zoom: true,
@@ -114,7 +115,7 @@ export default function Search(props: {
       }
         {ticket && ticket.status !== 'error' && <Button
           disabled={!ticket || isLoading}
-          onClick={() => props.togglePassed?.(ticket)}
+          onClick={() => props.togglePassed?.(ticket, showSuccessModal)}
         >
         {ticket?.passed ? 'Revoke status' : 'Mark as scanned'}
         </Button>
