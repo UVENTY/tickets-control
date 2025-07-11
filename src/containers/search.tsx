@@ -1,7 +1,8 @@
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { Button, Container, Input, ScanArea, Text, Title } from '../components';
 import Spinner from '../components/spinner';
-import { useState } from 'react';
+import Modal from '../components/Modal';
+import { useState, useEffect } from 'react';
 
 const formats = [
   'qr_code',
@@ -32,10 +33,28 @@ export default function Search(props: {
   const [ searchValue, setSearchValue ] = useState<string>('')
   const { searchType = 'scan', isLoading, ticket, currentSearch, setSearhType } = props
 
+  const [modal, setModal] = useState<{open: boolean, status: 'success'|'error', message: string}>({open: false, status: 'success', message: ''});
+
+  useEffect(() => {
+    if (ticket) {
+      if (ticket.status === 'error') {
+        setModal({open: true, status: 'error', message: 'Error'});
+      } else {
+        setModal({open: true, status: 'success', message: 'Successfully'});
+      }
+    }
+  }, [ticket]);
+
   const isScan = searchType === 'scan'
 
   return (
     <Container>
+      <Modal
+        open={modal.open}
+        status={modal.status}
+        message={modal.message}
+        onClose={() => setModal(m => ({...m, open: false}))}
+      />
       <Title>Event #{props.eventId}</Title>
       <Text size='12px' status='hint'>{props.username}</Text>
       <Button onClick={() => setSearhType?.(searchType === 'scan' ? 'input' : 'scan')}>{!isScan ? 'Scan ticket with camera' : 'Find by id'}</Button>
@@ -44,7 +63,15 @@ export default function Search(props: {
         <ScanArea>
           <Scanner
             formats={formats}
-            onScan={(result) => props.search?.(result[0]?.rawValue)}
+            onScan={(result) => {
+              if (result[0]?.rawValue) {
+                // Вибрация на 200 мс
+                if (window.navigator.vibrate) {
+                  window.navigator.vibrate(200);
+                }
+                props.search?.(result[0]?.rawValue)
+              }
+            }}
             components={{
               audio: true,
               onOff: true,
@@ -75,7 +102,11 @@ export default function Search(props: {
       </Container>}
       {(!isScan && (ticket?.status === 'error' || currentSearch !== searchValue)) &&
         <Button
-          onClick={() => props.search?.(searchValue)}
+        
+          onClick={() => {
+            console.log('Кнопка поиска нажата, значение:', searchValue);
+            props.search?.(searchValue)
+          }}
           disabled={isLoading}
         >
           {isLoading ? <Spinner size={16} /> : 'Search'}
