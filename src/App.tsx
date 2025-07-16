@@ -37,7 +37,6 @@ function App() {
   }, [user?.sc_id])
 
   const handleSearch = (value: string) => {
-    console.log('Отправляю запрос:', value); // ЛОГ ДО запроса
     if (!user?.sc_id) return
     const parts = value.split(';')
     let id
@@ -55,7 +54,6 @@ function App() {
     setLoading(true)
     setCurrentSearch(value)
     checkTicket(id).then(({ data, code }) => {
-      console.log('Ответ от сервера:', { data, code }); // ЛОГ ПОСЛЕ запроса
       const isPaid = data.status === '2' || (data.b_state && Number(data.b_state) !== 3 && !!data.b_payment_datetime)
       if (code === '200' && isPaid) {
         const passed = data?.pass === '1'

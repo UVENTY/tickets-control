@@ -3,6 +3,7 @@ import { Button, Container, Input, ScanArea, Text, Title } from '../components';
 import Spinner from '../components/spinner';
 import Modal from '../components/Modal';
 import { useState, useEffect } from 'react';
+import { vibrate } from '../utils/vibration';
 
 const formats = [
   'qr_code',
@@ -61,9 +62,13 @@ export default function Search(props: {
           props.setTicket?.(null);
         }}
       />
+
       <Title>Event #{props.eventId}</Title>
       <Text size='12px' status='hint'>{props.username}</Text>
-      <Button onClick={() => setSearhType?.(searchType === 'scan' ? 'input' : 'scan')}>{!isScan ? 'Scan ticket with camera' : 'Find by id'}</Button>
+      <Button onClick={() => {
+        vibrate(50);
+        setSearhType?.(searchType === 'scan' ? 'input' : 'scan')
+      }}>{!isScan ? 'Scan ticket with camera' : 'Find by id'}</Button>
       {!isScan ? 
         <Input value={searchValue} onChange={e => setSearchValue(e.currentTarget.value)} /> :
         <ScanArea>
@@ -71,10 +76,8 @@ export default function Search(props: {
             formats={formats}
             onScan={(result) => {
               if (result[0]?.rawValue) {
-                // Вибрация на 200 мс
-                if (window.navigator.vibrate) {
-                  window.navigator.vibrate(200);
-                }
+                // Вибрация при сканировании QR-кода
+                vibrate(200);
                 props.search?.(result[0]?.rawValue)
               }
             }}
@@ -109,7 +112,8 @@ export default function Search(props: {
         <Button
         
           onClick={() => {
-            console.log('Кнопка поиска нажата, значение:', searchValue);
+            // Вибрация при нажатии кнопки поиска
+            vibrate(100);
             props.search?.(searchValue)
           }}
           disabled={isLoading}
@@ -119,7 +123,11 @@ export default function Search(props: {
       }
         {ticket && ticket.status !== 'error' && <Button
           disabled={!ticket || isLoading}
-          onClick={() => props.togglePassed?.(ticket, showSuccessModal)}
+          onClick={() => {
+            // Вибрация при изменении статуса билета
+            vibrate(150);
+            props.togglePassed?.(ticket, showSuccessModal)
+          }}
         >
         {ticket?.passed ? 'Revoke status' : 'Mark as scanned'}
         </Button>
