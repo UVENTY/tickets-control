@@ -37,7 +37,6 @@ function App() {
   }, [user?.sc_id])
 
   const handleSearch = (value: string) => {
-    
     const parts = value.split(';')
     let id
     let seatId: any
