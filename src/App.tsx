@@ -37,7 +37,7 @@ function App() {
   }, [user?.sc_id])
 
   const handleSearch = (value: string) => {
-    if (!user?.sc_id) return
+    
     const parts = value.split(';')
     let id
     let seatId: any
@@ -88,7 +88,7 @@ function App() {
           onSuccess={onLogin}
         /> :
         <Search
-          eventId={event?.id}
+          eventId={event?.id ?? 'All events'}
           username={user?.u_name}
           ticket={ticket}
           isLoading={loading}
