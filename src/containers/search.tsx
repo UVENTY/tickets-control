@@ -42,7 +42,7 @@ export default function Search(props: {
     if (ticket && ticket.status === 'error') {
       setModal({open: true, status: 'error', message: 'Error'});
     }
-  }, [ticket?.status === 'error']);
+  }, [ticket]);
 
   // Функция для показа модального окна успеха при изменении статуса
   const showSuccessModal = () => {

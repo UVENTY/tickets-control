@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import { Button, Container, Input, Text } from '../components';
 import login from '../api/auth';
 import Spinner from '../components/spinner';

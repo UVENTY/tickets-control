@@ -4,7 +4,7 @@ import Login from './containers/login';
 import Search from './containers/search';
 import { getUser } from './api/auth';
 import getEvent from './api/event';
-import { checkTicket, getNotPurchasedTickets, updateTicket } from './api/ticket';
+import { checkTicket, updateTicket } from './api/ticket';
 
 function App() {
   const [ searchType, setSearchType ] = useState<'scan' | 'input'>('scan')
@@ -44,7 +44,7 @@ function App() {
     if (parts.length === 1) {
       id = value
     } else {
-      const [hallId, category, row, seat, partId, time] = parts
+      const [hallId, category, row, seat, partId] = parts
       id = partId
       ticket.id = [hallId, category, row, seat].join(';')
       ticket.row = row
