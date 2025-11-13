@@ -5,6 +5,7 @@ import Search from './containers/search';
 import { getUser } from './api/auth';
 import getEvent from './api/event';
 import { checkTicket, updateTicket } from './api/ticket';
+import { vibrate } from './utils/vibration';
 
 function App() {
   const [ searchType, setSearchType ] = useState<'scan' | 'input'>('scan')
@@ -24,7 +25,11 @@ function App() {
 
   useEffect(() => {
     const eventId = user?.sc_id
-    if (!eventId) return
+    // Если eventId пустой, контроллер может проверять билеты для всех событий
+    if (!eventId) {
+      setEvent(null)
+      return
+    }
     getEvent(eventId).then(setEvent)
     /* Promise.all([
       getEvent(eventId),
@@ -66,18 +71,38 @@ function App() {
 
   const handleTogglePassed = useCallback(async (ticket: any, onSuccess?: () => void) => {
     setLoading(true)
-    const response = await updateTicket(ticket.t_id, ticket.id, !ticket.passed)
-    if (response.data?.code === '200') {
-      setTicket((prev: any) => ({
-        ...prev,
-        status: ticket.passed ? 'success' : undefined,
-        message: !ticket.passed ? 'Scanned' : 'Valid',
-        passed: !ticket.passed
-      }))
-      // Показываем модальное окно успеха при изменении статуса
-      onSuccess?.()
+    try {
+      const response = await updateTicket(ticket.t_id, ticket.id, !ticket.passed)
+      if (response.data?.code === '200') {
+        setTicket((prev: any) => ({
+          ...prev,
+          status: ticket.passed ? 'success' : undefined,
+          message: !ticket.passed ? 'Scanned' : 'Valid',
+          passed: !ticket.passed
+        }))
+        // Вибрация уже вызвана синхронно в обработчике клика
+        // Дополнительная вибрация будет вызвана в onSuccess (showSuccessModal)
+        // Показываем модальное окно успеха при изменении статуса
+        onSuccess?.()
+      } else {
+        // Вибрация при ошибке (паттерн: короткая-пауза-короткая)
+        // Попытка вызвать вибрацию, но она может не сработать если прошло много времени после клика
+        try {
+          vibrate([100, 50, 100])
+        } catch (e) {
+          // Игнорируем ошибку, если вибрация не может быть вызвана асинхронно
+        }
+      }
+    } catch (error) {
+      // Вибрация при ошибке
+      try {
+        vibrate([100, 50, 100])
+      } catch (e) {
+        // Игнорируем ошибку, если вибрация не может быть вызвана асинхронно
+      }
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [])
 
   return (

@@ -5,12 +5,22 @@
  */
 export const vibrate = (duration: number | number[] = 200): boolean => {
   try {
-    if (window.navigator && window.navigator.vibrate) {
-      return window.navigator.vibrate(duration);
+    // Проверяем наличие API вибрации
+    if (typeof window !== 'undefined' && window.navigator && 'vibrate' in window.navigator) {
+      const result = window.navigator.vibrate(duration);
+      // Логируем для отладки (можно убрать в продакшене)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Вибрация вызвана:', duration, 'Результат:', result);
+      }
+      return result;
+    } else {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Вибрация не поддерживается браузером');
+      }
+      return false;
     }
-    return false;
   } catch (error) {
-    console.warn('Вибрация не поддерживается:', error);
+    console.warn('Ошибка при вызове вибрации:', error);
     return false;
   }
 };

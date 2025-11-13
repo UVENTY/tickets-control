@@ -47,6 +47,13 @@ export default function Search(props: {
   // Функция для показа модального окна успеха при изменении статуса
   const showSuccessModal = () => {
     setModal({open: true, status: 'success', message: 'Successfully'});
+    // Попытка вызвать дополнительную вибрацию (может не сработать если прошло много времени после клика)
+    // Основная вибрация уже вызвана синхронно в обработчике клика
+    try {
+      vibrate(150);
+    } catch (e) {
+      // Игнорируем ошибку, если вибрация не может быть вызвана асинхронно
+    }
   };
 
   const isScan = searchType === 'scan'
@@ -123,9 +130,11 @@ export default function Search(props: {
       }
         {ticket && ticket.status !== 'error' && <Button
           disabled={!ticket || isLoading}
-          onClick={() => {
-            // Вибрация при изменении статуса билета
-            vibrate(150);
+          onClick={(e) => {
+            // Вибрация для тактильного отклика при клике (синхронно в обработчике события)
+            // Это важно для мобильных устройств, где вибрация должна быть в контексте user gesture
+            vibrate(100);
+            // Вызываем функцию изменения статуса
             props.togglePassed?.(ticket, showSuccessModal)
           }}
         >
